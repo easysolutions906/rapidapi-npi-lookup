@@ -71,8 +71,16 @@ const formatProvider = (result) => {
 
 const searchNppes = async (params) => {
   const url = buildNppesUrl(params);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`NPPES API error: ${res.statusText}`);
+  const res = await fetch(url, {
+    headers: {
+      'User-Agent': 'NPI-Lookup-API/1.0',
+      'Accept': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`NPPES API error (${res.status}): ${body.substring(0, 200)}`);
+  }
   const data = await res.json();
 
   if (data.Errors) {
