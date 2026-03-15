@@ -5,14 +5,12 @@ const PORT = process.env.PORT || 3007;
 
 app.use(express.json());
 
-const NPPES_BASE = 'https://npiregistry.cms.hhs.gov/api/?version=2.1';
-
 const buildNppesUrl = (params) => {
-  const url = new URL(NPPES_BASE);
+  const searchParams = new URLSearchParams({ version: '2.1' });
   Object.entries(params).forEach(([key, val]) => {
-    if (val) url.searchParams.set(key, val);
+    if (val) searchParams.set(key, val);
   });
-  return url.toString();
+  return `https://npiregistry.cms.hhs.gov/api/?${searchParams.toString()}`;
 };
 
 const formatProvider = (result) => {
